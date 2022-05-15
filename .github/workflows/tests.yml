@@ -44,6 +44,9 @@ jobs:
       run: |
            python3 -m pip install --upgrade pip
            python3 -m pip install git+https://github.com/jeffkaufman/icdiff.git
+           brew update
+           brew upgrade llvm
+           brew install gcc@10
     - name: build library
       run: make COMPILER=${{matrix.compiler}} TARGET=${{matrix.target}} FLAGS=-stdlib=libstdc++
     - name: build tests
