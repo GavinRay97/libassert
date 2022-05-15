@@ -23,6 +23,15 @@ jobs:
     - name: build basic test
       working-directory: tests
       run: make basic_test COMPILER=clang++
+  build-clang-macos:
+    runs-on: macos-11
+    steps:
+    - uses: actions/checkout@v2
+    - name: make
+      run: make COMPILER=clang++ FLAGS=-stdlib=libstdc++
+    - name: build basic test
+      working-directory: tests
+      run: make basic_test COMPILER=clang++ CPPFLAGS=-stdlib=libstdc++
   build-msvc:
     runs-on: windows-2019
     steps:

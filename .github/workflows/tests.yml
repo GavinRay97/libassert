@@ -31,6 +31,32 @@ jobs:
     - name: run tests
       working-directory: tests
       run: python3 run-tests.py ${{matrix.compiler}} ${{matrix.target}}
+  test-macos:
+    runs-on: macos-11
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [clang++]
+        target: [debug]
+    steps:
+    - uses: actions/checkout@v2
+    - name: dependencies
+      run: |
+           python3 -m pip install --upgrade pip
+           python3 -m pip install git+https://github.com/jeffkaufman/icdiff.git
+    - name: build library
+      run: make COMPILER=${{matrix.compiler}} TARGET=${{matrix.target}} FLAGS=-stdlib=libstdc++
+    - name: build tests
+      working-directory: tests
+      run: make tests COMPILER=${{matrix.compiler}} TARGET=${{matrix.target}} CPPFLAGS=-stdlib=libstdc++
+    - name: dos2unix
+      working-directory: tests/integration/expected
+      run: |
+           sudo apt install dos2unix
+           dos2unix *.txt
+    - name: run tests
+      working-directory: tests
+      run: python3 run-tests.py ${{matrix.compiler}} ${{matrix.target}}
   test-windows:
     runs-on: windows-2019
     strategy:
